@@ -1,0 +1,1 @@
+A binary to evalaute math expression from the shell
