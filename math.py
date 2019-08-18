@@ -93,7 +93,7 @@ def processString(command):
     return  solveBraces[0]
 args=sys.argv
 string=""
-for i in args[1:]:
-    string+=i
-
-print(processString(string))
+if __name__=="__main__":
+    for i in args[1:]:
+        string+=i
+    print(processString(string))
