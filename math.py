@@ -19,56 +19,16 @@ def performOperation(tokens,operate):
     while index<lentokens:
         operation=tokens[index]
         if operation==operate:
-            value=int(stack.pop())
+            value=float(stack.pop())
             if index+1>= lentokens:
                 raise ValueError("could not process this string.\n are you missing a value?")
-            valuenext=int(tokens[index+1])
+            valuenext=float(tokens[index+1])
             stack.append(operations[operate](value,valuenext))
             index= index+2
         else:
             stack.append(operation)
             index=index+1
-    return stack
-    
-def tokenize(string):
-    resultTokens=[]
-    stack=[]
-    count=0
-    countPrev=0
-    matchnumbers=re.compile("(\d+)")
-    i=0 #index of string
-    lenstring=len(string)
-
-    while i<lenstring:
-        c=string[i] #char of string
-        if c=="(":
-            if not stack:
-                countPrev=i
-            stack.append(0)
-            count= count+ 1
-            i=i+1
-        elif c==")":
-            count= count+1
-            stack.pop()
-            if not stack:
-                resultTokens.append(string[countPrev:countPrev+count])
-                count=0
-            i=i+1
-        elif c in ["/","+","-","*","^"]:
-            if stack:
-                count=count +1
-            else:
-                resultTokens.append(c)
-            i=i +1
-        else:
-            if stack:
-                count=count +1
-                i=i+1
-            else:
-                a,b=matchnumbers.match(string[i:]).span() #find matching numbers
-                resultTokens.append(string[i:i+b])
-                i=i+b
-    return resultTokens
+    return stack 
 
 def processString(command):
     command=removeWhiteSpace(command)
@@ -77,23 +37,33 @@ def processString(command):
         if command[-1]!=")":
             raise  ValueError("invalid command")
         command=command[1:lenghts-1] # remove the braces
-    tokens=tokenize(command)
-    solveBraces=[]
-    for toks in tokens:
-        if toks[0]=="(": #first value is a brace
-            solveBraces.append(processString(toks))
-        else:
-            solveBraces.append(toks)
-
-    #using bodmas rule solve division first then multiplication 
+    tokens = re.findall(r'(\d+(?=[*/^+-]|$)|\d+\.\d+|[*/^+-])', command)    
+    #tokens = re.findall(r'(\d+|[*/^+-])', command)     #using bodmas rule solve division first then multiplication 
     # then addition then subtraction
 
     for op in ["^","/","*","+","-"]:
-        solveBraces=performOperation(solveBraces,op)
-    return  solveBraces[0]
+        tokens=performOperation(tokens,op) 
+    return  tokens[0]
+def processBraces(string): 
+    try:
+        float(string)
+        print(string)
+        return
+    except:
+        pass
+    pattern = re.compile(r'\((\d+\.?\d?[*/^+-]?)*\)') #match the smallest open and closing brace
+    match = re.search(pattern, string) 
+    if match: 
+        ans = processString(match.group()) 
+        newstring = re.sub(pattern,str(ans),string,1)
+    else: 
+        #no brace found, so process string like that
+        newstring = str(processString(string)) 
+    processBraces(newstring) 
+ 
 args=sys.argv
 string=""
 if __name__=="__main__":
     for i in args[1:]:
         string+=i
-    print(processString(string))
+    processBraces(string) 
