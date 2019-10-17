@@ -9,6 +9,9 @@ operations={
     "*":lambda x,y:x*y,
     "^":lambda x,y:x**y
 }
+
+isFloat = lambda x: x.isdigit() and float(x)-int(x)>0 
+
 def removeWhiteSpace(command):
     return re.sub("\s","",command)
     
@@ -49,8 +52,7 @@ def processString(command):
 def processBraces(string): 
     try:
         float(string)
-        print(string)
-        return
+        return string
     except:
         pass
     pattern = re.compile(r'\((\d+\.?\d?[*/^+-]*)*\)') #match the smallest open and closing brace
@@ -61,11 +63,17 @@ def processBraces(string):
     else: 
         #no brace found, so process string like that
         newstring = str(processString(string)) 
-    processBraces(newstring) 
- 
+    return processBraces(newstring) 
+
+def result(string):
+    res=processBraces(string)
+    if not isFloat(res):
+        return res.split(".")[0]
+    else:
+        return res
 args=sys.argv
 string=""
 if __name__=="__main__":
     for i in args[1:]:
         string+=i
-    processBraces(string) 
+    print(result(string))

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 import unittest
-from math import result,globMultipleOperation
+from math import result
 
 tokensandresult={
             "1+22+33":"56",
@@ -13,15 +13,7 @@ tokensandresult={
 
 class TestMath(unittest.TestCase):
     
-    def testGlobMultiple(self):
-        testCases=[
-                [['3', '*', '2', '+', '5', '*', '-', '1.0'],7],
-                [['2', '-', '3'],3],
-                [['1','+', '22', '+', '3'],5]
-            ]
-        for case in testCases:
-            self.assertEquals(len(globMultipleOperation(case[0])),case[1])
-
+   
     def test_result(self):
         for k in tokensandresult:
             token=result(k)
