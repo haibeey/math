@@ -8,4 +8,6 @@ USAGE(unix):
 
     or the binary directly ./math 1*5^6
 
-    for frequent usage you can add the binary to path and run from any dir
+    for frequent usage you can add the binary to path and run from any dir  
+    
+    go build in goyaccmath folder to build the go version. The goversion uses goyacc
